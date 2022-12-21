@@ -1,0 +1,1 @@
+DATABASE_URL=postgres://judcrndv:aNIOARLwsdtJP0EHa3lDWpurTQzmt7Rh@floppy.db.elephantsql.com/judcrndv PORT=:2565 go run server.go

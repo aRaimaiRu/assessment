@@ -8,12 +8,15 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/aRaimaiRu/assessment/expense"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 )
 
 func main() {
+	db := expense.InitDB()
+	defer db.Close()
 	e := echo.New()
 	e.Logger.SetLevel(log.INFO)
 	e.Use(middleware.Logger())

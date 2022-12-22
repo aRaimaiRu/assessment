@@ -8,10 +8,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func init() {
-	InitDB()
-}
-
 var db *sql.DB
 var err error
 

@@ -19,6 +19,7 @@ func main() {
 	defer db.Close()
 	e := echo.New()
 	e.Logger.SetLevel(log.INFO)
+
 	e.Use(middleware.Logger())
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "OK")

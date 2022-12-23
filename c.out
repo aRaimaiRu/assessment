@@ -1,7 +1,7 @@
 mode: set
-github.com/aRaimaiRu/assessment/expense/create.go:3.59,7.22 2 1
-github.com/aRaimaiRu/assessment/expense/create.go:10.2,10.21 1 1
-github.com/aRaimaiRu/assessment/expense/create.go:7.22,9.3 1 1
+github.com/aRaimaiRu/assessment/expense/create.go:3.59,8.16 4 1
+github.com/aRaimaiRu/assessment/expense/create.go:11.2,11.16 1 1
+github.com/aRaimaiRu/assessment/expense/create.go:8.16,10.3 1 1
 github.com/aRaimaiRu/assessment/expense/db.go:31.23,33.16 2 0
 github.com/aRaimaiRu/assessment/expense/db.go:37.2,45.16 3 0
 github.com/aRaimaiRu/assessment/expense/db.go:49.2,49.11 1 0

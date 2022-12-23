@@ -74,13 +74,14 @@
 		<pre class="file" id="file0" style="display: none">package expense
 
 func Create(db DBQuery, expense Expense) (Expense, error) <span class="cov8" title="1">{
-        row := db.QueryRow("INSERT INTO expenses (id , title, amount, note ,tags ) values ($1, $2, %3, %4) ;",
+        rows := db.QueryRow("INSERT INTO expenses (id , title, amount, note ,tags ) values ($1, $2, %3, %4) ;",
                 expense.Id, expense.Title, expense.Amount, expense.Note, expense.Tags)
-
-        if row.Err() != nil </span><span class="cov8" title="1">{
-                return Expense{}, row.Err()
+        ex := Expense{}
+        err := rows.Scan(&amp;ex.Id, &amp;ex.Title, &amp;ex.Amount, &amp;ex.Note, &amp;ex.Tags)
+        if err != nil </span><span class="cov8" title="1">{
+                return Expense{}, err
         }</span>
-        <span class="cov8" title="1">return expense, nil</span>
+        <span class="cov8" title="1">return ex, nil</span>
 }
 </pre>
 		

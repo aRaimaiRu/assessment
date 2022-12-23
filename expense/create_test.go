@@ -68,13 +68,6 @@ func (r StubRow) Scan(dest ...any) error {
 		*value_string = r.Note
 	}
 
-	value_string_arr, ok := dest[4].(*[]string)
-	if !ok {
-		return errors.New("Error Tag")
-	} else {
-		*value_string_arr = r.Tags
-	}
-
 	return nil
 }
 

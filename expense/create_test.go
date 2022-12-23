@@ -16,25 +16,26 @@ func (d Dummy) QueryRow(query string, args ...any) expense.Row {
 type DummyRow struct{}
 
 func (r DummyRow) Err() error {
-	return errors.New("Dummie error")
+	return errors.New("Dummy error")
 }
 func (r DummyRow) Scan(dest ...any) error {
-	return nil
+	return errors.New("Dummy error")
 }
 
 type Stub struct{}
 
 func (d Stub) QueryRow(query string, args ...any) expense.Row {
-	return StunRow{}
+	return StubRow{}
 }
 
-type StunRow struct {
+type StubRow struct {
 }
 
-func (r StunRow) Err() error {
+func (r StubRow) Err() error {
 	return nil
 }
-func (r StunRow) Scan(dest ...any) error {
+func (r StubRow) Scan(dest ...any) error {
+
 	return nil
 }
 
@@ -75,7 +76,7 @@ func TestCreateShouldReturnExpense(t *testing.T) {
 			Note:   "night market promotion discount 10 bath",
 			Tags:   []string{"food", "beverage"},
 		}
-		want := "Dummie error"
+		want := "Dummy error"
 		testdb := Dummy{}
 
 		_, err := expense.Create(testdb, give)

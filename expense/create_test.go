@@ -22,8 +22,11 @@ func TestCreateShouldReturnExpense(t *testing.T) {
 		}
 		testdb := expense.InitDB()
 
-		got := expense.Create(testdb, give)
+		got, err := expense.Create(testdb, give)
 
+		if err != nil {
+			t.Errorf("Error : %v", err)
+		}
 		if got.Title != want.Title {
 			t.Errorf("want %s got %s", want.Title, got.Title)
 		}

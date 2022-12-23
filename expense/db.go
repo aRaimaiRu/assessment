@@ -19,6 +19,15 @@ type Expense struct {
 	Tags   []string
 }
 
+type DBQuery interface {
+	QueryRow(query string, args ...any) Row
+}
+
+type Row interface {
+	Err() error
+	Scan(dest ...any) error
+}
+
 func InitDB() *sql.DB {
 	db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {

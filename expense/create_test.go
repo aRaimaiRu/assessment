@@ -6,6 +6,23 @@ import (
 	"github.com/aRaimaiRu/assessment/expense"
 )
 
+type Stub struct {
+}
+
+func (d Stub) QueryRow(query string, args ...any) expense.Row {
+	return StunRow{}
+}
+
+type StunRow struct {
+}
+
+func (r StunRow) Err() error {
+	return nil
+}
+func (r StunRow) Scan(dest ...any) error {
+	return nil
+}
+
 func TestCreateShouldReturnExpense(t *testing.T) {
 	t.Run("TestCreateShouldReturnExpense", func(t *testing.T) {
 		give := expense.Expense{
@@ -20,7 +37,7 @@ func TestCreateShouldReturnExpense(t *testing.T) {
 			Note:   "night market promotion discount 10 bath",
 			Tags:   []string{"food", "beverage"},
 		}
-		testdb := expense.InitDB()
+		testdb := Stub{}
 
 		got, err := expense.Create(testdb, give)
 

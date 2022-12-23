@@ -1,13 +1,28 @@
 package expense_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/aRaimaiRu/assessment/expense"
 )
 
-type Stub struct {
+type Dummy struct{}
+
+func (d Dummy) QueryRow(query string, args ...any) expense.Row {
+	return DummyRow{}
 }
+
+type DummyRow struct{}
+
+func (r DummyRow) Err() error {
+	return errors.New("Dummie error")
+}
+func (r DummyRow) Scan(dest ...any) error {
+	return nil
+}
+
+type Stub struct{}
 
 func (d Stub) QueryRow(query string, args ...any) expense.Row {
 	return StunRow{}
@@ -49,6 +64,24 @@ func TestCreateShouldReturnExpense(t *testing.T) {
 		}
 		if got.Note != want.Note {
 			t.Errorf("want %s got %s", want.Note, got.Note)
+		}
+
+	})
+
+	t.Run("TestCreateShouldReturnError", func(t *testing.T) {
+		give := expense.Expense{
+			Title:  "strawberry smoothie",
+			Amount: 79,
+			Note:   "night market promotion discount 10 bath",
+			Tags:   []string{"food", "beverage"},
+		}
+		want := "Dummie error"
+		testdb := Dummy{}
+
+		_, err := expense.Create(testdb, give)
+
+		if err == nil {
+			t.Errorf("want error %s got nill ", want)
 		}
 
 	})

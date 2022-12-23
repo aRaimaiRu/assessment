@@ -22,19 +22,58 @@ func (r DummyRow) Scan(dest ...any) error {
 	return errors.New("Dummy error")
 }
 
-type Stub struct{}
+type Stub struct {
+	expense.Expense
+}
 
 func (d Stub) QueryRow(query string, args ...any) expense.Row {
-	return StubRow{}
+
+	return StubRow{d.Expense}
 }
 
 type StubRow struct {
+	expense.Expense
 }
 
 func (r StubRow) Err() error {
 	return nil
 }
 func (r StubRow) Scan(dest ...any) error {
+
+	value, ok := dest[0].(*int)
+	if !ok {
+		return errors.New("Error ID")
+	} else {
+		*value = r.Id
+	}
+
+	value_string, ok := dest[1].(*string)
+	if !ok {
+		return errors.New("Error Title")
+	} else {
+		*value_string = r.Title
+	}
+
+	value_float, ok := dest[2].(*float32)
+	if !ok {
+		return errors.New("Error Amount")
+	} else {
+		*value_float = r.Amount
+	}
+
+	value_string, ok = dest[3].(*string)
+	if !ok {
+		return errors.New("Error Note")
+	} else {
+		*value_string = r.Note
+	}
+
+	value_string_arr, ok := dest[4].(*[]string)
+	if !ok {
+		return errors.New("Error Tag")
+	} else {
+		*value_string_arr = r.Tags
+	}
 
 	return nil
 }
@@ -53,7 +92,7 @@ func TestCreateShouldReturnExpense(t *testing.T) {
 			Note:   "night market promotion discount 10 bath",
 			Tags:   []string{"food", "beverage"},
 		}
-		testdb := Stub{}
+		testdb := Stub{want}
 
 		got, err := expense.Create(testdb, give)
 

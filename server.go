@@ -14,8 +14,11 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
+var db expense.MyDB
+
 func main() {
-	db := expense.InitDB()
+
+	db := expense.MyDB{expense.InitDB()}
 	defer db.Close()
 	e := echo.New()
 	e.Logger.SetLevel(log.INFO)
@@ -24,6 +27,8 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "OK")
 	})
+
+	e.POST("/expense", handlercreate)
 
 	go func() {
 		if err := e.Start(os.Getenv("PORT")); err != nil && err != http.ErrServerClosed { // Start server
@@ -39,4 +44,18 @@ func main() {
 	if err := e.Shutdown(ctx); err != nil {
 		e.Logger.Fatal(err)
 	}
+}
+
+type Err struct {
+	Message string `json:"message"`
+}
+
+func handlercreate(c echo.Context) error {
+	u := expense.Expense{}
+	err := c.Bind(&u)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
+	}
+	expense.Create(db, u)
+	return c.JSON(http.StatusOK, Err{Message: err.Error()})
 }

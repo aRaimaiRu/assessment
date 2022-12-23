@@ -20,12 +20,11 @@ type Expense struct {
 }
 
 type DBQuery interface {
-	QueryRow(query string, args ...any) Row
+	QueryRow(query string, args ...any) *sql.Row
 }
 
-type Row interface {
-	Err() error
-	Scan(dest ...any) error
+type MyDB struct {
+	*sql.DB
 }
 
 func InitDB() *sql.DB {

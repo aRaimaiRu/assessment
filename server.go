@@ -17,6 +17,10 @@ import (
 
 var db *expense.MyDB
 
+type Err struct {
+	Message string `json:"message"`
+}
+
 func main() {
 
 	db = &expense.MyDB{
@@ -52,10 +56,6 @@ func gracefulShutdown(e *echo.Echo) {
 	if err := e.Shutdown(ctx); err != nil {
 		e.Logger.Fatal(err)
 	}
-}
-
-type Err struct {
-	Message string `json:"message"`
 }
 
 func handlercreate(c echo.Context) error {

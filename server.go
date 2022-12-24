@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -31,6 +32,7 @@ func main() {
 	})
 
 	e.POST("/expenses", handlercreate)
+	e.GET("/expenses/:id", getExpenseHandle)
 
 	go func() {
 		if err := e.Start(os.Getenv("PORT")); err != nil && err != http.ErrServerClosed { // Start server
@@ -63,4 +65,20 @@ func handlercreate(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 	}
 	return c.JSON(http.StatusCreated, u)
+}
+
+func getExpenseHandle(c echo.Context) error {
+	id_param := c.Param("id")
+	id, err := strconv.Atoi(id_param)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
+	}
+
+	u, err := expense.QueryExpense(db, id)
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
+	}
+	return c.JSON(http.StatusOK, u)
+
 }

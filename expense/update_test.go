@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/aRaimaiRu/assessment/expense"
+	"github.com/stretchr/testify/assert"
 )
 
 type Dummy struct {
@@ -27,15 +28,15 @@ func (d Dummy) Close() error {
 }
 func TestUpdateOneRow(t *testing.T) {
 	t.Run(" PrepareReturnErrorShouldReturnError", func(t *testing.T) {
-
-		give := &Dummy{}
+		give := expense.MyDB{&Dummy{}}
+		ex := expense.Expense{}
 		want := "MyError"
 
-		_, err := expense.QueryExpense(give, 1)
+		_, err := give.UpdateRowById_(ex, 1)
 
-		if err.Error() != want {
-			t.Errorf("expect: %v got: %v", want, err.Error())
-		}
+		assert.NotNil(t, err)
+		assert.Equal(t, err.Error(), want)
+
 	})
 
 }

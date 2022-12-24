@@ -3,6 +3,8 @@ package expense
 import (
 	"database/sql"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type Dummy struct {
@@ -24,14 +26,12 @@ func (d Dummy) Close() error {
 func TestQueryOneRow(t *testing.T) {
 	t.Run(" PrepareReturnErrorShouldReturnError", func(t *testing.T) {
 
-		give := &Dummy{}
+		give := MyDB{&Dummy{}}
 		want := "MyError"
+		_, err := give.QueryExpense_(1)
 
-		_, err := QueryExpense(give, 1)
-
-		if err.Error() != want {
-			t.Errorf("expect: %v got: %v", want, err.Error())
-		}
+		assert.NotNil(t, err)
+		assert.Equal(t, err.Error(), want)
 	})
 
 }

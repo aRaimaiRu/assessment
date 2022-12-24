@@ -65,8 +65,7 @@ func handlerCreate(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
 	}
-	u, err = db.Create_(u)
-	// u, err = expense.Create(db, u)
+	u, err = db.Create(u)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 	}
@@ -80,7 +79,7 @@ func getExpenseHandle(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
 	}
 
-	u, err := expense.QueryExpense(db, id)
+	u, err := db.QueryExpense_(id)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
@@ -101,13 +100,13 @@ func UpdateExpenseHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
 	}
 
-	expense.UpdateRowById(db, e, id)
+	db.UpdateRowById_(e, id)
 	return c.JSON(http.StatusOK, e)
 
 }
 
 func getAllExpenses(c echo.Context) error {
-	e, err := expense.QueryAllExpenses(db)
+	e, err := db.QueryAllExpenses()
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
 	}

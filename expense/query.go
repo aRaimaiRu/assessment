@@ -17,8 +17,23 @@ func QueryExpense(db DBQuery, id int) (Expense, error) {
 	return ex, nil
 
 }
+func (db MyDB) QueryExpense_(id int) (Expense, error) {
+	stmt, err := db.Prepare("SELECT * FROM expenses where id=$1")
+	ex := Expense{}
+	if err != nil {
+		return ex, err
+	}
 
-func QueryAllExpenses(db DBQuery) ([]Expense, error) {
+	row := stmt.QueryRow(id)
+	err = row.Scan(&ex.Id, &ex.Title, &ex.Amount, &ex.Note, pq.Array(&ex.Tags))
+	if err != nil {
+		return ex, err
+	}
+	return ex, nil
+
+}
+
+func (db MyDB) QueryAllExpenses() ([]Expense, error) {
 	stmt, err := db.Prepare("SELECT * FROM expenses")
 	ex_arr := []Expense{}
 	if err != nil {

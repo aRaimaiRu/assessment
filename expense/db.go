@@ -8,10 +8,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func init() {
-	InitDB()
-}
-
 var db *sql.DB
 var err error
 
@@ -21,6 +17,14 @@ type Expense struct {
 	Amount float32
 	Note   string
 	Tags   []string
+}
+
+type DBQuery interface {
+	QueryRow(query string, args ...any) *sql.Row
+}
+
+type MyDB struct {
+	*sql.DB
 }
 
 func InitDB() *sql.DB {

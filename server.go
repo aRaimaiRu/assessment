@@ -65,7 +65,8 @@ func handlerCreate(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
 	}
-	u, err = expense.Create(db, u)
+	u, err = db.Create_(u)
+	// u, err = expense.Create(db, u)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 	}

@@ -12,11 +12,11 @@ var db *sql.DB
 var err error
 
 type Expense struct {
-	Id     int
-	Title  string
-	Amount float32
-	Note   string
-	Tags   []string
+	Id     int      `json:"id"`
+	Title  string   `json:"title"`
+	Amount float32  `json:"amount"`
+	Note   string   `json:"note"`
+	Tags   []string `json:"tags"`
 }
 
 type DBQuery interface {

@@ -35,7 +35,7 @@ func main() {
 		return c.JSON(http.StatusOK, "OK")
 	})
 
-	e.POST("/expenses", handlercreate)
+	e.POST("/expenses", handlerCreate)
 	e.GET("/expenses/:id", getExpenseHandle)
 
 	go func() {
@@ -58,7 +58,7 @@ func gracefulShutdown(e *echo.Echo) {
 	}
 }
 
-func handlercreate(c echo.Context) error {
+func handlerCreate(c echo.Context) error {
 	u := expense.Expense{}
 	err := c.Bind(&u)
 	if err != nil {

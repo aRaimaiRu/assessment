@@ -22,10 +22,11 @@ type Expense struct {
 type DBQuery interface {
 	QueryRow(query string, args ...any) *sql.Row
 	Prepare(query string) (*sql.Stmt, error)
+	Close() error
 }
 
 type MyDB struct {
-	*sql.DB
+	DBQuery
 }
 
 func InitDB() *sql.DB {

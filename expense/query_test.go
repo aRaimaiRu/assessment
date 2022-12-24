@@ -18,6 +18,9 @@ func (d Dummy) QueryRow(query string, args ...any) *sql.Row {
 func (d Dummy) Prepare(query string) (*sql.Stmt, error) {
 	return nil, MyError{}
 }
+func (d Dummy) Close() error {
+	return MyError{}
+}
 func TestQueryOneRow(t *testing.T) {
 	t.Run(" PrepareReturnErrorShouldReturnError", func(t *testing.T) {
 

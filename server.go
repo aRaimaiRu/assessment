@@ -37,6 +37,7 @@ func main() {
 
 	e.POST("/expenses", handlerCreate)
 	e.GET("/expenses/:id", getExpenseHandle)
+	e.PUT("/expenses/:id", UpdateExpenseHandler)
 
 	go func() {
 		if err := e.Start(os.Getenv("PORT")); err != nil && err != http.ErrServerClosed { // Start server
@@ -84,5 +85,22 @@ func getExpenseHandle(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 	}
 	return c.JSON(http.StatusOK, u)
+
+}
+
+func UpdateExpenseHandler(c echo.Context) error {
+	id_param := c.Param("id")
+	id, err := strconv.Atoi(id_param)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
+	}
+	e := expense.Expense{}
+	err = c.Bind(&e)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
+	}
+
+	expense.UpdateRowById(db, e, id)
+	return c.JSON(http.StatusOK, e)
 
 }

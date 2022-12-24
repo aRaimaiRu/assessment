@@ -2,7 +2,6 @@ package expense
 
 import (
 	"database/sql"
-	"fmt"
 	"testing"
 )
 
@@ -24,15 +23,7 @@ func TestQueryOneRow(t *testing.T) {
 
 		give := &Dummy{}
 		want := "MyError"
-		ex := Expense{
-			Title:  "strawberry smoothie",
-			Amount: 79,
-			Note:   "night market promotion discount 10 bath",
-			Tags:   []string{"food", "beverage"},
-		}
 
-		fmt.Printf("expense =>%v\n", ex)
-		fmt.Printf("give =>%v\n", give)
 		_, err := QueryExpense(give, 1)
 
 		if err.Error() != want {

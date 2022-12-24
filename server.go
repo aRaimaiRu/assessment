@@ -40,6 +40,10 @@ func main() {
 		}
 	}()
 
+	gracefulShutdown(e)
+
+}
+func gracefulShutdown(e *echo.Echo) {
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 	<-shutdown

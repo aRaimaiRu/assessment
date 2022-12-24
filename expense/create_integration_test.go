@@ -9,7 +9,7 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"strconv"
+
 	"strings"
 	"testing"
 
@@ -36,19 +36,6 @@ func TestCreateExpense(t *testing.T) {
 	assert.NotEqual(t, 0, e.Id)
 	assert.Equal(t, "strawberry smoothie", e.Title)
 	assert.Equal(t, float32(79.0), e.Amount)
-}
-
-func TestGetExpense(t *testing.T) {
-	e := seedExpense(t)
-
-	var lastest expense.Expense
-	res := request(http.MethodGet, uri("expenses", strconv.Itoa(e.Id)), nil)
-	err := res.Decode(&lastest)
-
-	assert.Nil(t, err)
-	assert.Equal(t, lastest.Title, e.Title)
-	assert.Equal(t, lastest.Amount, e.Amount)
-	assert.Equal(t, lastest.Note, e.Note)
 }
 
 func seedExpense(t *testing.T) expense.Expense {

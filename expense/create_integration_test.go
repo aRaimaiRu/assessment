@@ -16,7 +16,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateUser(t *testing.T) {
+func TestCreateExpense(t *testing.T) {
 	body := bytes.NewBufferString(
 		`{
 			"title": "strawberry smoothie",
@@ -25,32 +25,33 @@ func TestCreateUser(t *testing.T) {
 			"tags": ["food", "beverage"]
 		}`,
 	)
-	var u expense.Expense
+	var e expense.Expense
 
 	res := request(http.MethodPost, uri("expenses"), body)
-	err := res.Decode(&u)
+	err := res.Decode(&e)
 
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusCreated, res.StatusCode)
-	assert.NotEqual(t, 0, u.Id)
-	assert.Equal(t, "strawberry smoothie", u.Title)
-	assert.Equal(t, float32(79.0), u.Amount)
+	assert.NotEqual(t, 0, e.Id)
+	assert.Equal(t, "strawberry smoothie", e.Title)
+	assert.Equal(t, float32(79.0), e.Amount)
 }
 
 func TestGetExpense(t *testing.T) {
-	u := seedExpense(t)
+	e := seedExpense(t)
 
 	var lastest expense.Expense
-	res := request(http.MethodGet, uri("expenses", strconv.Itoa(u.Id)), nil)
+	res := request(http.MethodGet, uri("expenses", strconv.Itoa(e.Id)), nil)
 	err := res.Decode(&lastest)
+
 	assert.Nil(t, err)
-	assert.Equal(t, lastest.Title, u.Title)
-	assert.Equal(t, lastest.Amount, u.Amount)
-	assert.Equal(t, lastest.Note, u.Note)
+	assert.Equal(t, lastest.Title, e.Title)
+	assert.Equal(t, lastest.Amount, e.Amount)
+	assert.Equal(t, lastest.Note, e.Note)
 }
 
 func seedExpense(t *testing.T) expense.Expense {
-	var c expense.Expense
+	var e expense.Expense
 	body := bytes.NewBufferString(
 		`{
 			"title": "smoothie",
@@ -59,11 +60,11 @@ func seedExpense(t *testing.T) expense.Expense {
 			"tags": ["food", "beverage"]
 		}`,
 	)
-	err := request(http.MethodPost, uri("expenses"), body).Decode(&c)
+	err := request(http.MethodPost, uri("expenses"), body).Decode(&e)
 	if err != nil {
 		t.Fatal("can't create uomer:", err)
 	}
-	return c
+	return e
 }
 
 func uri(paths ...string) string {

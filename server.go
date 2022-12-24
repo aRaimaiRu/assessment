@@ -38,7 +38,7 @@ func main() {
 	e.POST("/expenses", handlerCreate)
 	e.GET("/expenses/:id", getExpenseHandle)
 	e.PUT("/expenses/:id", UpdateExpenseHandler)
-
+	e.GET("/expenses", getAllExpenses)
 	go func() {
 		if err := e.Start(os.Getenv("PORT")); err != nil && err != http.ErrServerClosed { // Start server
 			e.Logger.Fatal("shutting down the server")
@@ -103,4 +103,12 @@ func UpdateExpenseHandler(c echo.Context) error {
 	expense.UpdateRowById(db, e, id)
 	return c.JSON(http.StatusOK, e)
 
+}
+
+func getAllExpenses(c echo.Context) error {
+	e, err := expense.QueryAllExpenses(db)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
+	}
+	return c.JSON(http.StatusOK, e)
 }

@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -34,6 +35,35 @@ func TestCreateUser(t *testing.T) {
 	assert.NotEqual(t, 0, u.Id)
 	assert.Equal(t, "strawberry smoothie", u.Title)
 	assert.Equal(t, float32(79.0), u.Amount)
+}
+
+func TestGetExpense(t *testing.T) {
+	u := seedExpense(t)
+
+	var lastest expense.Expense
+	res := request(http.MethodGet, uri("expenses", strconv.Itoa(u.Id)), nil)
+	err := res.Decode(&lastest)
+	assert.Nil(t, err)
+	assert.Equal(t, lastest.Title, u.Title)
+	assert.Equal(t, lastest.Amount, u.Amount)
+	assert.Equal(t, lastest.Note, u.Note)
+}
+
+func seedExpense(t *testing.T) expense.Expense {
+	var c expense.Expense
+	body := bytes.NewBufferString(
+		`{
+			"title": "smoothie",
+			"amount": 80,
+			"note": "night market promotion discount 20 bath", 
+			"tags": ["food", "beverage"]
+		}`,
+	)
+	err := request(http.MethodPost, uri("expenses"), body).Decode(&c)
+	if err != nil {
+		t.Fatal("can't create uomer:", err)
+	}
+	return c
 }
 
 func uri(paths ...string) string {

@@ -25,7 +25,7 @@ func init() {
 	db := &handler.MyHandler{&expense.MyDB{
 		expense.InitDB(),
 	}}
-	defer db.Close()
+
 	e := echo.New()
 	e.Logger.SetLevel(log.INFO)
 

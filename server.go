@@ -15,17 +15,20 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-var db *expense.MyDB
-
 type Err struct {
 	Message string `json:"message"`
 }
 
+type Handler struct {
+	*expense.MyDB
+}
+
 func main() {
 
-	db = &expense.MyDB{
+	db := &Handler{&expense.MyDB{
 		expense.InitDB(),
-	}
+	}}
+
 	defer db.Close()
 	e := echo.New()
 	e.Logger.SetLevel(log.INFO)
@@ -35,10 +38,10 @@ func main() {
 		return c.JSON(http.StatusOK, "OK")
 	})
 
-	e.POST("/expenses", handlerCreate)
-	e.GET("/expenses/:id", getExpenseHandle)
-	e.PUT("/expenses/:id", UpdateExpenseHandler)
-	e.GET("/expenses", getAllExpenses)
+	e.POST("/expenses", db.handlerCreate)
+	e.GET("/expenses/:id", db.getExpenseHandle)
+	e.PUT("/expenses/:id", db.UpdateExpenseHandler)
+	e.GET("/expenses", db.getAllExpenses)
 	go func() {
 		if err := e.Start(os.Getenv("PORT")); err != nil && err != http.ErrServerClosed { // Start server
 			e.Logger.Fatal("shutting down the server")
@@ -59,7 +62,7 @@ func gracefulShutdown(e *echo.Echo) {
 	}
 }
 
-func handlerCreate(c echo.Context) error {
+func (db Handler) handlerCreate(c echo.Context) error {
 	u := expense.Expense{}
 	err := c.Bind(&u)
 	if err != nil {
@@ -72,7 +75,7 @@ func handlerCreate(c echo.Context) error {
 	return c.JSON(http.StatusCreated, u)
 }
 
-func getExpenseHandle(c echo.Context) error {
+func (db Handler) getExpenseHandle(c echo.Context) error {
 	id_param := c.Param("id")
 	id, err := strconv.Atoi(id_param)
 	if err != nil {
@@ -88,7 +91,7 @@ func getExpenseHandle(c echo.Context) error {
 
 }
 
-func UpdateExpenseHandler(c echo.Context) error {
+func (db Handler) UpdateExpenseHandler(c echo.Context) error {
 	id_param := c.Param("id")
 	id, err := strconv.Atoi(id_param)
 	if err != nil {
@@ -105,7 +108,7 @@ func UpdateExpenseHandler(c echo.Context) error {
 
 }
 
-func getAllExpenses(c echo.Context) error {
+func (db Handler) getAllExpenses(c echo.Context) error {
 	e, err := db.QueryAllExpenses()
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})

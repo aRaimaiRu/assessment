@@ -1,0 +1,9 @@
+FROM golang:1.19-alpine
+
+
+# Set working directory
+WORKDIR /go/src/target
+
+CMD CGO_ENABLED=0  DATABASE_URL=postgresql://localhost:5432 PORT=:2565 go test ./... -v --tags=integration
+# Run tests
+# CMD CGO_ENABLED=0  DATABASE_URL=postgresql://localhost:5432 PORT=:2565 go test ./... -v --tags=integration

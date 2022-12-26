@@ -14,8 +14,37 @@ import (
 	"testing"
 
 	"github.com/aRaimaiRu/assessment/expense"
+	"github.com/aRaimaiRu/assessment/handler"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
 	"github.com/stretchr/testify/assert"
 )
+
+func init() {
+	db := &handler.MyHandler{&expense.MyDB{
+		expense.InitDB(),
+	}}
+	defer db.Close()
+	e := echo.New()
+	e.Logger.SetLevel(log.INFO)
+
+	e.Use(middleware.Logger())
+	e.GET("/", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, "OK")
+	})
+
+	e.POST("/expenses", db.HandlerCreate)
+	e.GET("/expenses/:id", db.GetExpenseHandle)
+	e.PUT("/expenses/:id", db.UpdateExpenseHandler)
+	e.GET("/expenses", db.GetAllExpenses)
+
+	go func() {
+		if err := e.Start(os.Getenv("PORT")); err != nil && err != http.ErrServerClosed { // Start server
+			e.Logger.Fatal("shutting down the server")
+		}
+	}()
+}
 
 func TestCreateExpense(t *testing.T) {
 	body := bytes.NewBufferString(

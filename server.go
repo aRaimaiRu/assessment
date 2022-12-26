@@ -5,11 +5,12 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
 	"time"
 
 	"github.com/aRaimaiRu/assessment/expense"
+	"github.com/aRaimaiRu/assessment/handler"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
@@ -19,13 +20,9 @@ type Err struct {
 	Message string `json:"message"`
 }
 
-type Handler struct {
-	*expense.MyDB
-}
-
 func main() {
 
-	db := &Handler{&expense.MyDB{
+	db := &handler.MyHandler{&expense.MyDB{
 		expense.InitDB(),
 	}}
 
@@ -38,10 +35,10 @@ func main() {
 		return c.JSON(http.StatusOK, "OK")
 	})
 
-	e.POST("/expenses", db.handlerCreate)
-	e.GET("/expenses/:id", db.getExpenseHandle)
+	e.POST("/expenses", db.HandlerCreate)
+	e.GET("/expenses/:id", db.GetExpenseHandle)
 	e.PUT("/expenses/:id", db.UpdateExpenseHandler)
-	e.GET("/expenses", db.getAllExpenses)
+	e.GET("/expenses", db.GetAllExpenses)
 	go func() {
 		if err := e.Start(os.Getenv("PORT")); err != nil && err != http.ErrServerClosed { // Start server
 			e.Logger.Fatal("shutting down the server")
@@ -60,58 +57,4 @@ func gracefulShutdown(e *echo.Echo) {
 	if err := e.Shutdown(ctx); err != nil {
 		e.Logger.Fatal(err)
 	}
-}
-
-func (db Handler) handlerCreate(c echo.Context) error {
-	u := expense.Expense{}
-	err := c.Bind(&u)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
-	}
-	u, err = db.Create(u)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
-	}
-	return c.JSON(http.StatusCreated, u)
-}
-
-func (db Handler) getExpenseHandle(c echo.Context) error {
-	id_param := c.Param("id")
-	id, err := strconv.Atoi(id_param)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
-	}
-
-	u, err := db.QueryExpense_(id)
-
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
-	}
-	return c.JSON(http.StatusOK, u)
-
-}
-
-func (db Handler) UpdateExpenseHandler(c echo.Context) error {
-	id_param := c.Param("id")
-	id, err := strconv.Atoi(id_param)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
-	}
-	e := expense.Expense{}
-	err = c.Bind(&e)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
-	}
-
-	db.UpdateRowById_(e, id)
-	return c.JSON(http.StatusOK, e)
-
-}
-
-func (db Handler) getAllExpenses(c echo.Context) error {
-	e, err := db.QueryAllExpenses()
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
-	}
-	return c.JSON(http.StatusOK, e)
 }

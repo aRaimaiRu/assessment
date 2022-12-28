@@ -10,9 +10,11 @@ import (
 
 	"github.com/aRaimaiRu/assessment/expense"
 	"github.com/aRaimaiRu/assessment/handler"
+	"github.com/aRaimaiRu/assessment/middlewares"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+
 	"github.com/labstack/gommon/log"
 )
 
@@ -31,6 +33,8 @@ func main() {
 	e.Logger.SetLevel(log.INFO)
 
 	e.Use(middleware.Logger())
+	e.Use(middlewares.AuthMiddleware)
+
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "OK")
 	})

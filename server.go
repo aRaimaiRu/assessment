@@ -41,7 +41,7 @@ func main() {
 	e.GET("/expenses", db.GetAllExpenses)
 	go func() {
 		if err := e.Start(os.Getenv("PORT")); err != nil && err != http.ErrServerClosed { // Start server
-			e.Logger.Fatal("shutting down the server")
+			e.Logger.Fatal("shutting down the server", err.Error())
 		}
 	}()
 

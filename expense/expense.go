@@ -2,6 +2,7 @@ package expense
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 
@@ -44,7 +45,7 @@ func InitDB() *sql.DB {
 	);`
 	_, err = db.Exec(createTb)
 	if err != nil {
-		log.Fatal("can't create table", err)
+		fmt.Println("can't create table")
 	}
 
 	return db

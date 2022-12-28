@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS expense (id SERIAL  PRIMARY KEY , title TEXT , amount FLOAT , note TEXT ,tags TEXT[]);

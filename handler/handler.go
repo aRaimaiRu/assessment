@@ -35,7 +35,7 @@ func (db MyHandler) GetExpenseHandle(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
 	}
 
-	u, err := db.QueryExpense_(id)
+	u, err := db.QueryExpense(id)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
@@ -56,7 +56,7 @@ func (db MyHandler) UpdateExpenseHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
 	}
 
-	db.UpdateRowById_(e, id)
+	db.UpdateRowById(e, id)
 	return c.JSON(http.StatusOK, e)
 
 }

@@ -15,6 +15,7 @@ services:
       - 2565
     depends_on:
       - deploy_db
+    restart: always
 
   deploy_db:
     image: postgres:14.1-alpine
